@@ -1,0 +1,91 @@
+//Code to find Sum of array for given range, in log(n) time. And update the value in log an time.
+
+      #include<bits/stdc++.h>
+      using namespace std;
+      const int N = 1e5+2;
+      int a[N], tree[4*N];
+
+      void build(int node,int start,int end){
+
+          if(start == end){
+              tree[node] = a[start];
+              return;
+          }
+
+          int mid = (start + end)/2;
+          build(node*2+1,start,mid);
+          build(node*2+2,mid+1,end);
+          
+          tree[node] = tree[node*2+1] + tree[node*2+2];
+      }
+
+      void update(int node,int start,int end,int index,int newValue){
+          if(start == end){
+              tree[node] = newValue;
+              a[node] = newValue;
+              return;
+          }
+
+          int mid = (start+end)/2;
+          if(index <= mid){
+              update(node*2+1,start,mid,index,newValue);
+          }else{
+              update(node*2+2,mid+1,end,index,newValue);
+          }
+
+          tree[node] = tree[node*2+1] + tree[node*2+2];
+      }
+
+      int query(int node,int start,int end,int l,int r){
+          if(start >= l && end <= r){
+              return tree[node];
+          }
+
+          if(end < l || start > r){
+              return 0;
+          }
+
+          int mid = (start+end)/2;
+          int q1 = query(node*2+1,start,mid,l,r);
+          int q2 = query(node*2+2,mid+1,end,l,r);
+          return q1 + q2;
+      }
+
+      int main(){
+          int n;
+          cin>>n;
+
+          for(int i=0;i<n;i++)
+              cin>>a[i];
+
+          build(0,0,n-1);
+          while(true){
+              int temp;
+              cin>>temp;
+
+              if(temp == -1){
+                  break;
+              }else{
+                  int l,r;
+                  cin>>l>>r;
+                  int ans = query(0,0,n-1,l,r);
+                  cout<<ans<<endl;
+              }
+          }
+
+          cout<<endl<<endl;
+          update(0,0,n-1,1,2);
+          while(true){
+              int temp;
+              cin>>temp;
+
+              if(temp == -1){
+                  break;
+              }else{
+                  int l,r;
+                  cin>>l>>r;
+                  int ans = query(0,0,n-1,l,r);
+                  cout<<ans<<endl;
+              }
+          }
+      }
