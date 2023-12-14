@@ -1,0 +1,95 @@
+import java.util.*;
+public class Main
+{
+	public static void main(String[] args) {
+	    
+	    //data types
+	    int mark = 1;
+	    float percetage = 1.1f;
+	    double per = 1.2; //suffix d is not necessary
+	    char grade = 'A';
+	    String name = "Prince";
+	    boolean isValid = false;
+	    long bigNumber = 12121212121212l;
+		
+		
+		//Type Casting
+		int a = 1, b = 2;
+		double ans = (double)a/b;
+		
+		
+		//Taking user Input
+		System.out.print("Enter age : ");
+		Scanner sc = new Scanner(System.in);
+		
+		
+		int age = sc.nextInt();  // Taking integer input
+		System.out.println("Age :" + age);
+		
+		/*
+		    sc.next();          Read a Single word from the user
+    		sc.nextBoolean()	Reads a boolean value from the user
+            sc.nextDouble()	    Reads a double value from the user
+            sc.nextFloat()	    Reads a float value from the user
+            sc.nextInt()	    Reads a int value from the user
+            sc.nextLine()	    Reads a whole Line from the user
+            sc.nextLong()	    Reads a long value from the user
+            sc.nextShort()	    Reads a short value from the user
+        */
+		
+		
+		//Arary in java
+		int marks[] = new int[5];
+		for(int i=0;i<marks.length;i++)
+		   marks[i] = sc.nextInt();
+		   
+		for(int i=0;i<marks.length;i++)
+		   System.out.print(marks[i] + " ");
+		   
+	    int array[] = {1,2,3,4,5};
+	    for(int i=0;i<array.length;i++)
+	       System.out.print(array[i] + " ");
+	   Arrays.sort(marks);          //sort an array Ascending
+	       
+	   //2D array
+	   //int twodArray[][] = new int[2][3];
+	   int twodArray[][] = {{1,2,3},{4,5,5}};
+	   
+	   
+	   //Strings 
+	   String str = "Prince Patel";
+	   int len = str.length();      //finding length
+	   char ch = str.charAt(1);     //return char at index 1
+	   String s1 = "a", s2 = "A";
+	   System.out.println(s1.compareTo(s2)); // string Comparision
+	   /* lexicographically checks
+	      s1 > s2 +Ve
+	      s1 < s2 -Ve
+	      s1 == s2 zero
+	   */
+	   
+	   String subPart = str.substring(0,5); // substring(startIndex,endIndex+1);
+	   
+	   //IMP STRINGS ARE IMMUTABLE SO TO OVER COME THIS WE CAN USE STRINGBUILDER CLASS
+	   StringBuilder sb = new StringBuilder("abc");
+	   char ch1 = sb.charAt(0);
+	   sb.setCharAt(0,'p');        //update char at index
+	   sb.insert(2,'n');           //insert extra character at index 2 and remaining are right shifted
+	   sb.delete(2,3);             //delete characters at index range 2 to 2 endIndex excluding
+	   sb.append("aa");            //append charater or string at end
+	   System.out.println(sb);
+	   
+	   
+	   //Array List -> Vector in c++
+	   ArrayList<Integer> list = new ArrayList<Integer>();
+	   list.add(1);                //add integer at end
+       	   list.add(1,9);              //add integer 9 at index 1
+       
+           int element = list.get(1);  //return element at index
+           list.remove(0);             //remove element at index 0
+           int n = list.size();        //return ArrayList size 
+           Collections.sort(list);     //sort array list in Ascending order
+           Collections.reverse(list);  //reverse array
+     }
+	
+}
