@@ -1,0 +1,297 @@
+NODEJS : 
+
+backend Creating Command: 
+	npm init
+	index.js -> write code in this file
+
+Run Backend : 
+	node index.js
+	nodemon index.js
+
+NodeJs Install Pacakges :
+	npm install PackageName    //install locally
+	npm install -g PackageName //install globally
+
+
+Creating Server Without Express
+	const http = require("https");
+	const server = http.createServer((req,res)=>{
+		res.send("<h1>Prince</h1>");
+	};
+	server.listen(5000,()=>{
+		console.log("server is running");
+	}
+
+
+Import / Export in Type Module ( default Setting )
+	const gfName = require("/randomJsFileName");
+
+	const gfName = "Mrs Random";
+	modules.exports = gfName;
+
+
+Import / Export in CommonJS 
+	import gfName from "./randomJsFileName.js";
+	
+	const gfName = "Mrs Random";
+	export default gfName;
+	
+
+	IMP : There can only be one default export
+	for exporting multiple use destructuring
+	e.g. 
+	const gfName = "Mrs Random";
+	const gfName1 = "Mrs Random1";
+	const gfName2 = "Mrs Random2";
+	const gfName3 = "Mrs Random3";
+	export default gfName;
+        export {gfName1, gfName2, gfName3};
+
+        import gfName, {gfName1,gfName2,gfName3} from "./randomJsFileName.js";   //importing using names
+        import * as myObject from "./randomJsFileName.js";                       //importing all at once
+
+
+
+Important Modules
+	1. fs   -> used to read and write in a file
+	2. os   -> way to interact with operating system
+	3. path -> related to url / file and directory path
+
+
+
+
+---------------------------------------------------------------------------------------------
+EXPRESS
+
+Creating Server using Express
+	import express from "express";
+	const app = express();
+	app.get("/",(req,res)=>{
+		res.send("Hi");
+
+		res.statusCode(400);
+		res.json({sucess : true, products : []});
+		res.status(400).json("message");  -> send status code and json data
+		res.sendFile();   -> To send the file as response
+
+
+		res.render("filename",{name : "Singh"}); 
+			this method is used to dynamically render the data by pass values in ejs file
+			ejs -> js is written inside html file
+			ejs file must be placed inside views folder
+			Dyanamic Files are placed in folder -> Views
+	})
+	app.listen(5000, ()=>{
+		console.log("backend is Running");
+	})
+
+MIDDLEWARE :
+	app.use() -> this used for middleware function
+		app.use(express.urlencoded({extended : true}));  -> this middleware help in reading form data
+
+		For Reading Json Input passed in Post Request :
+			app.use(express.json()); 
+
+		For Reading form data :
+			app.use(express.urlencoded({extended: true})); 
+
+
+
+----------------------------------------------------------------------
+EJS -> Emebeded javascript Template
+	res.render("filename",data_as_keyValue_pair);
+
+	<%= locals.passed_variable %>
+	OR
+	<%= passed_variable %> ->can produce error when passed_varible is not-defined / null
+
+
+----------------------------------------------------------------------
+MONGOOSE -> Library of nodejs for managing data in mongoDb
+
+	syntax to connect to DB:
+		const mongoose = require("mongoose");
+		mongoose.connect("url")                   
+		  .then()
+		  .catch();
+
+	URL : 
+		mongodb+srv://USERNMAE_HERE:PASSWORD_HERE@cluster0.caspazj.mongodb.net/DB_NAME_HERE?retryWrites=true&w=majority
+
+	IMP : 
+	    creating schema -> creating collection item structure
+	    creating model  -> creating collection /*giving collection name*/
+
+
+	Creating Schema : 
+	    const tempSchema = new mongoose.Schema({ 
+		    name: { 
+		        type: String, 
+		        require: true
+		    }, 
+		    health: Number
+		});
+
+	Creating Model :
+		Synatx :
+			const varibleName = new mongoose.model("modelName",schema,"collectionName");
+			//if collection name not given
+				collectionName = modelName with suffix 's'
+
+	    Example:
+	    	const temp = new mongoose.model("temp",tempSchema);      
+	    	//here collectionName not mentioned -> collection name will be temps
+
+	Creating item :
+	    const item1 = new temp({name: "Prince", health: "100"});
+
+	Saving to DB :
+	    item1.save(); -> async operation
+
+	    OR
+
+	Create and Save :
+		model.create({name: "Prince", health: "100"});
+
+	Delete item from DB;
+	    Syntax :
+	    	modelname.function_name({condition});
+	    Example:
+	        temp.deleteOne({name:"prince"});
+
+
+	refer mongoose doc for all operation using mongoose ......
+
+--------------------------------------------------------------------------------
+AUTHENTICATION : 
+	Cookies : used to store data in cleint side (locally)
+		Set cookie :
+			res.cookie("token","value",{options});
+
+		    clearing Cookies :
+		    	res.cookies("token",null,{
+		    		expires: new Date(Date.now());
+		    	});
+
+		Access :
+		    const data = req.cookies;
+		    IMP : cookie-parser package must be installed
+		    app.use(cookieParser());   -> middleware to read cookies 
+
+		Render Based on Token (cookies) :
+			app.get('/',(req,res)=>{
+				const {token} = req.cookies;
+				if(token){
+					res.render("logout");
+				}else{
+					res.render("login");
+				}
+			})
+
+		    Using MiddleWare :
+			    const isAunthenticated = async (req,res,next) => {
+			    	const {token} = req.cookies;
+			    	if(token){
+			    	    req.user = await User.findById(decoded._id); 
+			    	      	//This value can be accesed by next() function
+			    		next();
+			    	}else{
+			    	    res.render("login");
+			    	}
+			    }
+
+			    app.get("/",isAunthenticated,(req,res)=>{
+			    	res.render("login");
+			    })
+
+	JWT (JSON WEB TOKEN) : 	
+		Storing UserId / TokenValue directly Bad Practice -> therefore we use Json Web Token
+
+		Installation : 
+			npm install jsonwebtoken
+
+		Usage : 
+			const jwt = require("jsonwebtoken");
+			const token = jwt.sign({data},"key");
+				example : const token = jwt.sign({_id : user._id},"randomtxt");
+
+			verifing token : 
+				try{
+					const decode = jwt.verify(token, "radomtxt");
+				}catch(e){
+					console.log(er);
+				}
+
+				IMP : verify function return -> decoded String or throws an error
+
+	Bcrypt : 
+		This is used for hashing the passwords while storing in data-base
+		It is computationlly heavy
+
+		Installation : 
+			npm install bcrypt
+
+		Usage : 
+			const bcrypt = require("bcrypt");
+
+
+---------------------------------------------------------------------------------
+URL : Params/query
+	query :
+		http://localhost:4000/users/new?keyword=abhi&page=1
+			-> everything after ? is part of query
+			-> req.query = {"keyword" : "abhi", "page" : 1}
+
+
+	Params (dynamic URL) :
+	    http://localhost:4000/:userId
+	    	-> anything in place of userId will be userId
+
+	   	example: http://localhost:4000/sok9v686s67s8
+	    	-> req.params.userId = 	sok9v686s67s8
+
+	IMP :  ALWAYS PUT DYNAMIC ROUTE IN END OF ALL ROUTE 
+	       so that it does not conflit with other
+
+---------------------------------------------------------------------------------
+ROUTE SPLITING :
+	all routers are placed in route folder
+
+	USAGE :	
+	    Folder : Router/user.js
+			const express = require("express");
+			const router = express.Router();
+
+			router.get("/userId",(req,res)=>{
+			});
+
+			router.post("/userId",(req,res)=>{
+			});
+			modules.export = router;
+
+		File : app.js/index.js
+			const userRoute = require("/Router/user");
+			app.use("/user/",userRoute);
+
+
+	IMP :	Instead of writing all code here, specific task are written in seperate folder
+			Example : router.put("/userId",updateUser);
+				   -> updateUser function code in written in Controller folder Controller/user.js
+
+---------------------------------------------------------------------------------
+MODELS SPLITTING :
+	all db schema are placed in models folder
+
+	USAGE : 
+		Folder : models/user.js
+			const mongoose = require("mongoose");
+			const schema = new mongoose.Schema({
+
+			});
+			export const User = mongoose.model("User",schema);
+
+		Folder : Routes/user.js
+			const User = require("../models/users");
+			user.findById(user._id);
+
+-----------------------------------------------------------------------------------
